@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mini Chatbot Regex</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .chatbot {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        width: 400px;
+        padding: 20px;
+      }
+
+      .chatbot h2 {
+        text-align: center;
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      .messages {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        height: 200px;
+        overflow-y: auto;
+        margin-bottom: 15px;
+      }
+
+      .msg {
+        margin: 5px 0;
+        padding: 6px 10px;
+        border-radius: 8px;
+        max-width: 80%;
+      }
+
+      .user {
+        background: #d1e7dd;
+        align-self: flex-end;
+      }
+
+      .bot {
+        background: #e2e3e5;
+        align-self: flex-start;
+      }
+
+      .input-area {
+        display: flex;
+        gap: 10px;
+      }
+
+      .input-area input {
+        flex: 1;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+      }
+
+      .input-area button {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 8px;
+        background: #0d6efd;
+        color: white;
+        cursor: pointer;
+      }
+
+      .input-area button:hover {
+        background: #0b5ed7;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chatbot">
+      <h2>Regex Chatbot</h2>
+      <div class="messages" id="messages"></div>
+      <div class="input-area">
+        <input
+          type="text"
+          id="userInput"
+          placeholder="Type a sentence in English..."
+        />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+
+    <script>
+      function classifySentence(input) {
+        input = input.trim();
+
+        const regexQuestionAux =
+          /^(Do|Does|Is|Are|Can|Will|Did|Have|Has|Should|Could|Would)\b.*\?$/i;
+        const regexQuestionWh = /^(What|Where|When|Why|How)\b.*\?$/i;
+        const regexNegative = /\b(not|n't)\b/i;
+
+        if (regexQuestionAux.test(input) || regexQuestionWh.test(input)) {
+          return "Interrogative sentence 🤔";
+        } else if (regexNegative.test(input)) {
+          return "Negative sentence ❌";
+        } else {
+          return "Affirmative sentence ✅";
+        }
+      }
+
+      function sendMessage() {
+        const inputField = document.getElementById("userInput");
+        const messagesDiv = document.getElementById("messages");
+        const userText = inputField.value;
+
+        if (!userText) return;
+
+        // Mostrar mensaje del usuario
+        const userMsg = document.createElement("div");
+        userMsg.className = "msg user";
+        userMsg.textContent = userText;
+        messagesDiv.appendChild(userMsg);
+
+        // Clasificar con regex
+        const response = classifySentence(userText);
+
+        // Mostrar respuesta del bot
+        const botMsg = document.createElement("div");
+        botMsg.className = "msg bot";
+        botMsg.textContent = response;
+        messagesDiv.appendChild(botMsg);
+
+        // Scroll hacia abajo
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+        // Limpiar input
+        inputField.value = "";
+      }
+    </script>
+  </body>
+</html>
