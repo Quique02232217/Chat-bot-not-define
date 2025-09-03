@@ -49,7 +49,7 @@
       .message {
         padding: 10px 14px;
         border-radius: 18px;
-        max-width: 75%;
+        max-width: 85%;
         font-size: 14px;
         line-height: 1.4;
         word-wrap: break-word;
@@ -193,6 +193,7 @@
 
             // Reiniciar para nueva conversación
             setTimeout(() => {
+              showRules(); // Vuelve a mostrar reglas
               botMessage("👋 Hello again! What’s your name?");
               step = 0;
               userName = "";
@@ -221,7 +222,29 @@
         }
       }
 
-      // Start conversation
+      function showRules() {
+        botMessage("📘 **Grammar Rules for TO BE:**");
+        botMessage(
+          "✔ Present Affirmative: I am / He is / They are + complement"
+        );
+        botMessage(
+          "✔ Present Negative: I am not / She is not / We are not + complement"
+        );
+        botMessage("✔ Past Affirmative: I was / You were + complement");
+        botMessage("✔ Past Negative: He was not / They were not + complement");
+        botMessage("✔ Present Question: Am I...? / Is he...? / Are they...?");
+        botMessage("✔ Past Question: Was she...? / Were you...?");
+      }
+
+      // Permitir enviar con Enter
+      userInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          sendMessage();
+        }
+      });
+
+      // Start conversation with rules
+      showRules();
       botMessage("Hello! My name is Bot 🤖. What’s your name?");
     </script>
   </body>
