@@ -2,11 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Mini Chatbot Regex</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot Regex</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background: #f4f6f9;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -14,133 +15,212 @@
         margin: 0;
       }
 
-      .chatbot {
+      .chat-container {
         background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        width: 400px;
-        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        width: 420px;
+        height: 600px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
       }
 
-      .chatbot h2 {
+      .chat-header {
+        background: #2563eb;
+        color: white;
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
         text-align: center;
-        margin-bottom: 15px;
-        color: #333;
+        border-bottom: 2px solid #1d4ed8;
       }
 
-      .messages {
-        background: #f9f9f9;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 10px;
-        height: 200px;
+      .chat-box {
+        flex: 1;
         overflow-y: auto;
-        margin-bottom: 15px;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: #f9fafb;
       }
 
-      .msg {
-        margin: 5px 0;
-        padding: 6px 10px;
-        border-radius: 8px;
-        max-width: 80%;
-      }
-
-      .user {
-        background: #d1e7dd;
-        align-self: flex-end;
+      .message {
+        padding: 10px 14px;
+        border-radius: 18px;
+        max-width: 75%;
+        font-size: 14px;
+        line-height: 1.4;
+        word-wrap: break-word;
+        animation: fadeIn 0.2s ease-in-out;
       }
 
       .bot {
-        background: #e2e3e5;
+        background: #e0f2fe;
         align-self: flex-start;
+        border-bottom-left-radius: 4px;
       }
 
-      .input-area {
+      .user {
+        background: #d1fae5;
+        align-self: flex-end;
+        border-bottom-right-radius: 4px;
+      }
+
+      .chat-input-area {
         display: flex;
-        gap: 10px;
+        padding: 10px;
+        border-top: 1px solid #ddd;
+        background: #fff;
       }
 
-      .input-area input {
+      input {
         flex: 1;
-        padding: 8px;
-        border-radius: 8px;
+        padding: 12px;
         border: 1px solid #ccc;
+        border-radius: 20px;
+        outline: none;
+        font-size: 14px;
       }
 
-      .input-area button {
-        padding: 8px 12px;
+      button {
+        margin-left: 8px;
         border: none;
-        border-radius: 8px;
-        background: #0d6efd;
+        border-radius: 50%;
+        background: #2563eb;
         color: white;
+        font-size: 18px;
+        width: 45px;
+        height: 45px;
         cursor: pointer;
+        transition: background 0.2s ease;
       }
 
-      .input-area button:hover {
-        background: #0b5ed7;
+      button:hover {
+        background: #1d4ed8;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Scrollbar bonito */
+      .chat-box::-webkit-scrollbar {
+        width: 6px;
+      }
+      .chat-box::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
       }
     </style>
   </head>
   <body>
-    <div class="chatbot">
-      <h2>Regex Chatbot</h2>
-      <div class="messages" id="messages"></div>
-      <div class="input-area">
-        <input
-          type="text"
-          id="userInput"
-          placeholder="Type a sentence in English..."
-        />
-        <button onclick="sendMessage()">Send</button>
+    <div class="chat-container">
+      <div class="chat-header">🤖 English Chatbot</div>
+      <div class="chat-box" id="chatBox"></div>
+      <div class="chat-input-area">
+        <input type="text" id="userInput" placeholder="Type here..." />
+        <button onclick="sendMessage()">➤</button>
       </div>
     </div>
 
     <script>
-      function classifySentence(input) {
-        input = input.trim();
+      // --- Regex rules ---
+      const presentAffirmative =
+        /^(?:I am .+|(?:He|She|It|The \w+|[A-Z][a-z]+) is .+|(?:You|We|They|The \w+s) are .+)$/i;
+      const presentNegative =
+        /^(?:I am not .+|(?:He|She|It|The \w+|[A-Z][a-z]+) is not .+|(?:You|We|They|The \w+s) are not .+)$/i;
+      const pastAffirmative =
+        /^(?:(?:I|He|She|It|The \w+|[A-Z][a-z]+) was .+|(?:You|We|They|The \w+s) were .+)$/i;
+      const pastNegative =
+        /^(?:(?:I|He|She|It|The \w+|[A-Z][a-z]+) was not .+|(?:You|We|They|The \w+s) were not .+)$/i;
+      const presentQuestion =
+        /^(?:Am I .+\?|Is (?:He|She|It|The \w+|[A-Z][a-z]+) .+\?|Are (?:You|We|They|The \w+s) .+\?)$/i;
+      const pastQuestion =
+        /^(?:Was (?:I|He|She|It|The \w+|[A-Z][a-z]+) .+\?|Were (?:You|We|They|The \w+s) .+\?)$/i;
 
-        const regexQuestionAux =
-          /^(Do|Does|Is|Are|Can|Will|Did|Have|Has|Should|Could|Would)\b.*\?$/i;
-        const regexQuestionWh = /^(What|Where|When|Why|How)\b.*\?$/i;
-        const regexNegative = /\b(not|n't)\b/i;
+      // Conversation state
+      let step = 0;
+      let userName = "";
 
-        if (regexQuestionAux.test(input) || regexQuestionWh.test(input)) {
-          return "Interrogative sentence 🤔";
-        } else if (regexNegative.test(input)) {
-          return "Negative sentence ❌";
-        } else {
-          return "Affirmative sentence ✅";
-        }
+      const chatBox = document.getElementById("chatBox");
+      const userInput = document.getElementById("userInput");
+
+      function addMessage(text, sender) {
+        const msg = document.createElement("div");
+        msg.classList.add("message", sender);
+        msg.textContent = text;
+        chatBox.appendChild(msg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      function botMessage(text) {
+        addMessage(text, "bot");
       }
 
       function sendMessage() {
-        const inputField = document.getElementById("userInput");
-        const messagesDiv = document.getElementById("messages");
-        const userText = inputField.value;
+        const text = userInput.value.trim();
+        if (!text) return;
 
-        if (!userText) return;
+        addMessage(text, "user");
+        userInput.value = "";
 
-        // Mostrar mensaje del usuario
-        const userMsg = document.createElement("div");
-        userMsg.className = "msg user";
-        userMsg.textContent = userText;
-        messagesDiv.appendChild(userMsg);
+        if (step === 0) {
+          userName = text;
+          botMessage(
+            `Nice to meet you, ${userName}! Please type a sentence in English using the verb TO BE (present or past).`
+          );
+          step = 1;
+        } else if (step === 1) {
+          validateSentence(text);
+          botMessage("Do you want to try another sentence? (yes/no)");
+          step = 2;
+        } else if (step === 2) {
+          if (/^yes$/i.test(text)) {
+            botMessage("Great! Type your next sentence.");
+            step = 1;
+          } else {
+            botMessage("Thanks for practicing! See you next time.");
+            step = 3;
 
-        // Clasificar con regex
-        const response = classifySentence(userText);
-
-        // Mostrar respuesta del bot
-        const botMsg = document.createElement("div");
-        botMsg.className = "msg bot";
-        botMsg.textContent = response;
-        messagesDiv.appendChild(botMsg);
-
-        // Scroll hacia abajo
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-        // Limpiar input
-        inputField.value = "";
+            // Reiniciar para nueva conversación
+            setTimeout(() => {
+              botMessage("👋 Hello again! What’s your name?");
+              step = 0;
+              userName = "";
+            }, 2000);
+          }
+        }
       }
+
+      function validateSentence(text) {
+        if (presentAffirmative.test(text)) {
+          botMessage("✅ Correct sentence (Present Affirmative)");
+        } else if (presentNegative.test(text)) {
+          botMessage("✅ Correct sentence (Present Negative)");
+        } else if (pastAffirmative.test(text)) {
+          botMessage("✅ Correct sentence (Past Affirmative)");
+        } else if (pastNegative.test(text)) {
+          botMessage("✅ Correct sentence (Past Negative)");
+        } else if (presentQuestion.test(text)) {
+          botMessage("✅ Correct sentence (Present Question)");
+        } else if (pastQuestion.test(text)) {
+          botMessage("✅ Correct sentence (Past Question)");
+        } else {
+          botMessage("❌ Invalid sentence. Check subject-verb agreement.");
+        }
+      }
+
+      // Start conversation
+      botMessage("Hello! My name is Bot 🤖. What’s your name?");
     </script>
   </body>
 </html>
