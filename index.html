@@ -205,6 +205,15 @@
       }
 
       function validateSentence(text) {
+        // Verificar si es pregunta (termina con ?)
+        const isQuestion = text.endsWith("?");
+
+        // Si no es pregunta, debe terminar con punto.
+        if (!isQuestion && !text.endsWith(".")) {
+          botMessage("❌ Invalid sentence. It must end with a period.");
+          return;
+        }
+
         if (presentAffirmative.test(text)) {
           botMessage("✅ Correct sentence (Present Affirmative)");
         } else if (presentNegative.test(text)) {
