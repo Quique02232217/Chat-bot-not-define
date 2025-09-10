@@ -135,17 +135,17 @@
     <script>
       // --- Regex rules ---
       const presentAffirmative =
-        /^(?:I am .+|(?:He|She|It|The \w+|[A-Z][a-z]+) is .+|(?:You|We|They|The \w+s) are .+)$/i;
+        /^(?:I am .+|(?:He|She|It|The \w+|[A-Z][a-z]+) is .+|(?:You|We|They|The \w+s) are .+)$/;
       const presentNegative =
-        /^(?:I am not .+|(?:He|She|It|The \w+|[A-Z][a-z]+) is not .+|(?:You|We|They|The \w+s) are not .+)$/i;
+        /^(?:I am not .+|(?:He|She|It|The \w+|[A-Z][a-z]+) is not .+|(?:You|We|They|The \w+s) are not .+)$/;
       const pastAffirmative =
-        /^(?:(?:I|He|She|It|The \w+|[A-Z][a-z]+) was .+|(?:You|We|They|The \w+s) were .+)$/i;
+        /^(?:(?:I|He|She|It|The \w+|[A-Z][a-z]+) was .+|(?:You|We|They|The \w+s) were .+)$/;
       const pastNegative =
-        /^(?:(?:I|He|She|It|The \w+|[A-Z][a-z]+) was not .+|(?:You|We|They|The \w+s) were not .+)$/i;
+        /^(?:(?:I|He|She|It|The \w+|[A-Z][a-z]+) was not .+|(?:You|We|They|The \w+s) were not .+)$/;
       const presentQuestion =
-        /^(?:Am I .+\?|Is (?:He|She|It|The \w+|[A-Z][a-z]+) .+\?|Are (?:You|We|They|The \w+s) .+\?)$/i;
+        /^(?:Am I .+\?|Is (?:He|She|It|The \w+|[A-Z][a-z]+) .+\?|Are (?:You|We|They|The \w+s) .+\?)$/;
       const pastQuestion =
-        /^(?:Was (?:I|He|She|It|The \w+|[A-Z][a-z]+) .+\?|Were (?:You|We|They|The \w+s) .+\?)$/i;
+        /^(?:Was (?:I|He|She|It|The \w+|[A-Z][a-z]+) .+\?|Were (?:You|We|They|The \w+s) .+\?)$/;
 
       // Conversation state
       let step = 0;
